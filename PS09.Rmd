@@ -1,6 +1,6 @@
 ---
 title: "STAT/MATH 495: Problem Set 09"
-author: "WRITE YOUR NAME(S) HERE"
+author: "Meredith Manley"
 date: "2017-11-07"
 output:
   html_document:
@@ -34,28 +34,120 @@ Please indicate who you collaborated with on this assignment:
 ```{r}
 observations_1 <- read_csv("data/observations_1.csv")
 observations_2 <- read_csv("data/observations_2.csv")
+```
 
-# Set observations to be one of two datasets
-observations <- observations_2
+### observation_1
+```{r}
+# Empty data frame to store center coordinates
+obs1_centers <- as.data.frame(c())
 
-# Fit model for k=2
-k <- 2
-k_means_results <- kmeans(observations, centers=k)
-clusters <- k_means_results$cluster
-cluster_centers <- k_means_results$centers
+# For-loop to generate 10 center coordinates
+for (i in 1:10) {
 
-# Add cluster results to observations. Note we convert to factor since cluster
-# ID's should be treated as categorical
-observations$cluster <- as.factor(clusters)
+  # Set observations to be one of two datasets
+  observations <- observations_1
+  
+  # Fit model for k=2
+  k <- 2
+  k_means_results <- kmeans(observations, centers=k)
+  clusters <- k_means_results$cluster
+  cluster_centers <- k_means_results$centers
+  
+  # Build vector for cluster 1 and cluster 2 centers
+  cluster_centers_vect <- as.vector(cluster_centers)
+  cluster_centers_vect[1] -> obs1_centers[i,1]
+  cluster_centers_vect[3] -> obs1_centers[i,2]
+  cluster_centers_vect[2] -> obs1_centers[i,3]
+  cluster_centers_vect[4] -> obs1_centers[i,4]
+  
+  # Add cluster results to observations. Note we convert to factor since cluster
+  # ID's should be treated as categorical
+  observations$cluster <- as.factor(clusters)
+  
+  # Add cluster ID's to cluster_centers
+  cluster_centers <- cluster_centers %>% 
+    as_tibble() %>% 
+    mutate(cluster=as.factor(1:k))
+  
+  # Plot displaying location of centers respective to 100 observations
+  ggplot(NULL, aes(x=x1, y=x2, col=cluster)) +
+    geom_point(data=observations) +
+    geom_point(data=cluster_centers, size=5)
+}
 
-# Add cluster ID's to cluster_centers
-cluster_centers <- cluster_centers %>% 
-  as_tibble() %>% 
-  mutate(cluster=as.factor(1:k))
+# Name variables for center data frame
+colnames(obs1_centers)[1] <- "x1"
+colnames(obs1_centers)[2] <- "y1"
+colnames(obs1_centers)[3] <- "x2"
+colnames(obs1_centers)[4] <- "y2"
 
-ggplot(NULL, aes(x=x1, y=x2, col=cluster)) +
-  geom_point(data=observations) +
-  geom_point(data=cluster_centers, size=5)
+# Plot of cluster 1 centers
+ggplot(NULL, aes(x=x1, y=y1)) +
+  geom_point(data=obs1_centers) +
+  labs(x="x values", y="y values", title = "Cluster 1 Centers")
+
+# Plot of cluster 2 centers
+ggplot(NULL, aes(x=x2, y=y2)) +
+  geom_point(data=obs1_centers) +
+  labs(x="x values", y="y values", title = "Cluster 2 Centers")
+```
+
+
+### observation_2
+```{r}
+# Empty data frame to store center coordinates
+obs2_centers <- as.data.frame(c())
+
+# For-loop to generate 10 center coordinates
+for (i in 1:10) {
+
+  # Set observations to be one of two datasets
+  observations <- observations_2
+  
+  # Fit model for k=2
+  k <- 2
+  k_means_results <- kmeans(observations, centers=k)
+  clusters <- k_means_results$cluster
+  cluster_centers <- k_means_results$centers
+  
+  # Build vector for cluster 1 and cluster 2 centers
+  cluster_centers_vect <- as.vector(cluster_centers)
+  cluster_centers_vect[1] -> obs2_centers[i,1]
+  cluster_centers_vect[3] -> obs2_centers[i,2]
+  cluster_centers_vect[2] -> obs2_centers[i,3]
+  cluster_centers_vect[4] -> obs2_centers[i,4]
+  
+  # Add cluster results to observations. Note we convert to factor since cluster
+  # ID's should be treated as categorical
+  observations$cluster <- as.factor(clusters)
+  
+  # Add cluster ID's to cluster_centers
+  cluster_centers <- cluster_centers %>% 
+    as_tibble() %>% 
+    mutate(cluster=as.factor(1:k))
+  
+  # Plot displaying location of centers respective to 100 observations
+  ggplot(NULL, aes(x=x1, y=x2, col=cluster)) +
+    geom_point(data=observations) +
+    geom_point(data=cluster_centers, size=5)
+}
+
+# Name variables for center data frame
+colnames(obs2_centers)[1] <- "x1"
+colnames(obs2_centers)[2] <- "y1"
+colnames(obs2_centers)[3] <- "x2"
+colnames(obs2_centers)[4] <- "y2"
+
+# Plot of cluster 1 centers
+ggplot(NULL, aes(x=x1, y=y1)) +
+  geom_point(data=obs2_centers) +
+  labs(x="x values", y="y values", title = "Cluster 1 Centers")
+
+# PLot of cluster 2 centers
+ggplot(NULL, aes(x=x2, y=y2)) +
+  geom_point(data=obs2_centers) +
+  labs(x="x values", y="y values", title = "Cluster 2 Centers")
+
 ```
 
 **Questions**:
@@ -71,10 +163,10 @@ results.
 
 **Answers**:
 
-1.
-1.
-1.
-1.
+1. After having run KMC several times on `observations_1` I observed that the center point of the clusters and the clusters themselves were relatively incosistent. 
+1. The center coordinate pairs seem to vary because the data is scattered relatively evenly across the plot and thus results in different possible centers for different possible clusters. The data does not have a natural split or have distinct groupings of observations thus resulting in the variation in cluster center placement and clusters.
+1. After having run KMC several times on `obersvations_2` I observed that the center point of the clusters and the clusters were fairly consistent and were generally in the same place with each run.
+1. The center coordinate pairs do not vary considerably between runs because the data is already essentially split into two groups, thus makeing it easy to determine where the center for each cluster should be and therefore being consistent between runs. Because the data appears to already be divided into two different groups then the calculation of center points will be consistent between runs.
 
 
 
